@@ -1,4 +1,6 @@
-export const cmsData = [
+import { CMSSection } from "@/types/cms";
+
+export const cmsData: CMSSection[] = [
   {
     id: "hero-section",
     type: "hero",
@@ -99,6 +101,18 @@ export const cmsData = [
           styling: {
             className: "form-input",
             placeholder: "your@email.com",
+          },
+        },
+        {
+          type: "textarea",
+          name: "message",
+          label: "Message",
+          validation: {
+            required: true,
+          },
+          styling: {
+            className: "form-input",
+            placeholder: "How can we help you?",
           },
         },
       ],

@@ -50,25 +50,27 @@ export interface CMSGridSection {
   };
 }
 
+export interface InputField {
+  type: string;
+  name: string;
+  label: string;
+  validation: {
+    required: boolean;
+    minLength?: number;
+    maxLength?: number;
+    pattern?: string;
+  };
+  styling: {
+    className: string;
+    placeholder: string;
+  };
+}
+
 export interface CMSFormSection {
   id: string;
   type: 'form';
   attributes: {
-    fields: Array<{
-      type: string;
-      name: string;
-      label: string;
-      validation: {
-        required: boolean;
-        minLength?: number;
-        maxLength?: number;
-        pattern?: string;
-      };
-      styling: {
-        className: string;
-        placeholder: string;
-      };
-    }>;
+    fields: Array<InputField>;
     submission: {
       endpoint: string;
       method: string;

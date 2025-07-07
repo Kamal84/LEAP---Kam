@@ -2,16 +2,19 @@
 import React from 'react';
 // Components
 import Button from '../ui/Button';
+// Types
+import { CMSHeroSection } from '@/types/cms';
 
 interface HeroProps {
-  id?: string;
+  section: CMSHeroSection
 }
 
-const Hero: React.FC<HeroProps> = ({ id='hero-section' }) => {
+const Hero: React.FC<HeroProps> = ({ section }) => {
+const { background, content } = section.attributes;
 
   return (
      <section
-        id={id}
+        id="hero-section"
         className="relative py-20 flex items-center justify-center"
       >
         <div className="absolute inset-0 z-0">
@@ -20,18 +23,29 @@ const Hero: React.FC<HeroProps> = ({ id='hero-section' }) => {
             alt="Hero Background"
             className="w-full h-full object-cover"
           />
-          <div className="absolute inset-0 bg-gray-700 bg-opacity-50"></div>
+          {background?.overlay?.enabled && (
+            <div className="absolute inset-0" style={{ background: background?.overlay?.color}}></div>
+          )}
         </div>
 
         <div className="relative z-10 text-center px-4">
-          <h1 className="text-5xl md:text-6xl font-bold text-white mb-4">
-            Welcome to Our Platform
+          <h1 className="mb-4" style={{ 
+              fontSize: content?.title?.style?.fontSize, 
+              color: content?.title?.style?.color, 
+              fontWeight: content?.title?.style?.fontWeight 
+          }}>
+            {content?.title?.text}
           </h1>
-          <p className="text-2xl text-gray-100">Discover Amazing Features</p>
+          <p style={{ 
+              fontSize: content?.subtitle?.style?.fontSize, 
+              color: content?.subtitle?.style?.color, 
+          }}>
+            {content?.subtitle?.text}
+          </p>
           <Button text='Get Started' className="mt-8" />
         </div>
       </section>
-  );
+  );  
 };
 
 export default Hero;

@@ -22,11 +22,11 @@ const LandingContent: React.FC = () => {
   const renderCmsSection = (section: CMSSection) => {
     switch (section.type) {
       case 'hero':
-        return <Hero />;
+        return <Hero key={section.id} />;
       case 'grid':
-        return <FeatureGrid />;
+        return <FeatureGrid key={section.id} />;
       case 'form':
-        return <ContactForm />;
+        return <ContactForm key={section.id} />;
       default:
         return null;
     }

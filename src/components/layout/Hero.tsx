@@ -1,16 +1,24 @@
 // Standard libraries
-import React from 'react';
+import React, { useContext } from 'react';
 // Components
 import Button from '../ui/Button';
 // Types
 import { CMSHeroSection } from '@/types/cms';
+// Context
+import { LandingContext } from '@/contexts/LandingContext';
 
-interface HeroProps {
-  section: CMSHeroSection
-}
-
-const Hero: React.FC<HeroProps> = ({ section }) => {
-const { background, content } = section.attributes;
+const Hero: React.FC = () => {
+  // Data from LandingContext
+  // Find the hero section from context data
+  const contextHeroData = useContext(LandingContext);
+  const heroSection = contextHeroData?.find(section => section.type === 'hero') as CMSHeroSection;
+  
+  // Return null if hero section not found
+  if (!heroSection) {
+    return null;
+  }
+  
+  const { background, content } = heroSection.attributes;
 
   return (
      <section

@@ -7,20 +7,26 @@ import ContactForm from "@/components/layout/ContactForm";
 import FeatureGrid from "@/components/layout/FeatureGrid";
 import Footer from "@/components/layout/Footer";
 import Hero from "@/components/layout/Hero";
+// Context
+import { LandingContext } from "@/contexts/LandingContext";
+// React
+import { useContext } from "react";
 
 
-const Landing: React.FC = () => {
-
+const LandingContent: React.FC = () => {
+  // Use context to get CMS data
+  const contextData = useContext(LandingContext);
+  
   // This function takes a CMSSection object and returns the appropriate React component
   // based on the section's type. Each section type maps to a specific component.    
   const renderCmsSection = (section: CMSSection) => {
     switch (section.type) {
       case 'hero':
-        return <Hero key={section.id} section={section} />;
+        return <Hero />;
       case 'grid':
-        return <FeatureGrid key={section.id} section={section} />;
+        return <FeatureGrid />;
       case 'form':
-        return <ContactForm key={section.id} section={section} />;
+        return <ContactForm />;
       default:
         return null;
     }
@@ -28,9 +34,17 @@ const Landing: React.FC = () => {
 
   return (
     <>
-      {cmsData.map(renderCmsSection)}
+      {contextData?.map(renderCmsSection)}
       <Footer />
     </>
+  );
+};
+
+const Landing: React.FC = () => {
+  return (
+    <LandingContext.Provider value={cmsData}>
+      <LandingContent />
+    </LandingContext.Provider>
   );
 };
 

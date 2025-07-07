@@ -24,3 +24,6 @@
         - ContactForm
             - Utilise InputField component to dynamically populate the form by passing attributes via props
             - Require basic validation taken from cms.data
+- 1.3 What a State - state management
+    - Use Redux for state management
+    - OR useContext - shares data between components - no external library required

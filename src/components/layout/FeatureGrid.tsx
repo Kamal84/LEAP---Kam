@@ -1,15 +1,23 @@
 // Standard libraries
-import React from 'react';
+import React, { useContext } from 'react';
 import Image from "next/image";
 // Types
 import { CMSGridSection } from '@/types/cms';
+// Context
+import { LandingContext } from '@/contexts/LandingContext';
 
-interface FeatureGridProps {
-  section: CMSGridSection
-}
-
-const FeatureGrid: React.FC<FeatureGridProps> = ({ section }) => {
-  const { layout, items } = section.attributes;
+const FeatureGrid: React.FC = () => {
+  // Data from LandingContext
+  // Find the feature grid section from context data
+  const contextFeatureData = useContext(LandingContext);
+  const featureGridSection = contextFeatureData?.find(section => section.type === 'grid') as CMSGridSection;
+  
+  // Return null if feature grid section not found
+  if (!featureGridSection) {
+    return null;
+  }
+    
+  const { layout, items } = featureGridSection.attributes;
 
   return (
     <section id='feature-grid' className="py-16 px-4 md:px-10 bg-gray-50">

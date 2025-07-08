@@ -11,13 +11,15 @@ import { CMSFormSection } from '@/types/cms';
 import { LandingContext } from '@/contexts/LandingContext';
 
 const ContactForm: React.FC = () => {
-  const [formData, setFormData] = useState<Record<string, string>>({});
-  const [showSuccess, setShowSuccess] = useState(false);
-  const [showError, setShowError] = useState(false);
   // Data from LandingContext
   // Find the contact form section from context data
   const contextContactFormData = useContext(LandingContext);
   const contactFormSection = contextContactFormData?.find(section => section.type === 'form') as CMSFormSection;
+  
+  // State to manage form data and submission status
+  const [formData, setFormData] = useState<Record<string, string>>({});
+  const [showSuccess, setShowSuccess] = useState(false);
+  const [showError, setShowError] = useState(false);
   const { submitForm } = useSubmitForm();
   
   // Return null if contact form section not found
@@ -35,6 +37,7 @@ const ContactForm: React.FC = () => {
     }));
   };
 
+  // Handle form submission
   const handleFormSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setShowSuccess(false);
@@ -64,16 +67,11 @@ const ContactForm: React.FC = () => {
             className="bg-gray-50 p-8 rounded-lg shadow-md"
           >
             {fields.map((field, idx) => {
-              // For each field in the fields array, render a InputField component
-              // Pass the field object as a prop and use the index as the key
-              // Use props to pass attributes to input field instead of useContext
               return (
                 <InputField key={idx} field={field} onChange={handleInputChange}/>
               );
             })}
-
             <Button text="Send Message" fullWidth />
-
           </form>
 
           {showSuccess && (

@@ -1,5 +1,5 @@
 export const useSubmitForm = () => {
-  const submitForm = async (data: unknown) => {
+  const submitForm = async (data: Record<string, string>) => {
     try {
       const response = await fetch("/api/contactable", {
         method: "POST",
@@ -11,7 +11,9 @@ export const useSubmitForm = () => {
 
       const result = await response.json();
       console.log("Form submission result:", result);
-      return result;
+      return {
+        success: response.ok,
+      };
     } catch (err) {
       console.error("Form submission error:", err);
       throw err;

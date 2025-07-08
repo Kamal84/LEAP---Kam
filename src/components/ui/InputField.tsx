@@ -5,9 +5,11 @@ import { InputField } from '@/types/cms';
 
 interface FormInputFieldProps {
   field: InputField
+  value?: string
+  onChange?: (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void;
 }
 
-const FormInputField: React.FC<FormInputFieldProps> = ({ field }) => {
+const FormInputField: React.FC<FormInputFieldProps> = ({ field, value, onChange }) => {
   const { validation, styling } = field;
 
   // Prepare validation attributes for input/textarea elements
@@ -30,6 +32,8 @@ const FormInputField: React.FC<FormInputFieldProps> = ({ field }) => {
         <textarea
           id={field?.name}
           name={field?.name}
+          value={value}
+          onChange={onChange}
           placeholder={styling?.placeholder}
           rows={4}
           className={`w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 ${styling?.className}`}
@@ -37,13 +41,15 @@ const FormInputField: React.FC<FormInputFieldProps> = ({ field }) => {
           />
       ) : (
         <input
-        type={field.type}
-        id={field?.name}
-        name={field?.name}
-        placeholder={styling?.placeholder}
-        className={`w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 ${styling?.className}`}
-        {...validationProps} 
-      />
+          type={field.type}
+          id={field?.name}
+          name={field?.name}
+          value={value}
+          onChange={onChange}
+          placeholder={styling?.placeholder}
+          className={`w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 ${styling?.className}`}
+          {...validationProps} 
+        />
       )}
       
     </div>

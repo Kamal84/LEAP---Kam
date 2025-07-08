@@ -1,5 +1,5 @@
 // Standard libraries
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
 // Hooks
 import { useSubmitForm } from "@/hooks/submitForm.hook";
 // Components
@@ -11,6 +11,9 @@ import { CMSFormSection } from '@/types/cms';
 import { LandingContext } from '@/contexts/LandingContext';
 
 const ContactForm: React.FC = () => {
+  const [formData, setFormData] = useState<Record<string, string>>({});
+  const [showSuccess, setShowSuccess] = useState(false);
+  const [showError, setShowError] = useState(false);
   // Data from LandingContext
   // Find the contact form section from context data
   const contextContactFormData = useContext(LandingContext);
@@ -24,9 +27,31 @@ const ContactForm: React.FC = () => {
 
   const { fields, submission } = contactFormSection.attributes;
 
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: value
+    }));
+  };
+
   const handleFormSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    await submitForm({});
+    setShowSuccess(false);
+    setShowError(false);
+    
+    try {
+      const result = await submitForm(formData);
+      
+      if (result.success) {
+        setShowSuccess(true);
+      } else {
+        setShowError(true);
+      }
+    } catch (error) {
+      console.error('Form submission error:', error);
+      setShowError(true);
+    }
   };
   return (
      <section id={contactFormSection.id} className="py-16 px-4 bg-white">
@@ -43,7 +68,7 @@ const ContactForm: React.FC = () => {
               // Pass the field object as a prop and use the index as the key
               // Use props to pass attributes to input field instead of useContext
               return (
-                <InputField key={idx} field={field}/>
+                <InputField key={idx} field={field} onChange={handleInputChange}/>
               );
             })}
 
@@ -51,19 +76,23 @@ const ContactForm: React.FC = () => {
 
           </form>
 
-          <div
-            id="formSuccess"
-            className="hidden mt-4 p-4 bg-green-100 text-green-700 rounded-lg"
-          >
-            {submission?.successMessage}
-          </div>
+          {showSuccess && (
+            <div
+              id="formSuccess"
+              className="mt-4 p-4 bg-green-100 text-green-700 rounded-lg"
+            >
+              {submission?.successMessage}
+            </div>
+          )}
 
-          <div
-            id="formError"
-            className="hidden mt-4 p-4 bg-red-100 text-red-700 rounded-lg"
-          >
-            {submission?.errorMessage}
-          </div>
+          {showError && (
+            <div
+              id="formError"
+              className="mt-4 p-4 bg-red-100 text-red-700 rounded-lg"
+            >
+              {submission?.errorMessage}
+            </div>
+          )}
         </div>
       </section>
   );

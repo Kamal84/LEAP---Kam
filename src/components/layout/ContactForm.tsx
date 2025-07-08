@@ -18,6 +18,7 @@ const ContactForm: React.FC = () => {
   
   // State to manage form data and submission status
   const [formData, setFormData] = useState<Record<string, string>>({});
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
   const [showError, setShowError] = useState(false);
   const { submitForm } = useSubmitForm();
@@ -42,18 +43,26 @@ const ContactForm: React.FC = () => {
     e.preventDefault();
     setShowSuccess(false);
     setShowError(false);
+    setIsSubmitting(true);
     
     try {
+      // Added 2 second delay to simulate server processing time
+      await new Promise(resolve => setTimeout(resolve, 2000));
+
       const result = await submitForm(formData);
       
       if (result.success) {
         setShowSuccess(true);
+        const form = e.target as HTMLFormElement;
+        form.reset();
       } else {
         setShowError(true);
       }
     } catch (error) {
       console.error('Form submission error:', error);
       setShowError(true);
+    } finally {
+      setIsSubmitting(false);
     }
   };
   return (
@@ -68,10 +77,10 @@ const ContactForm: React.FC = () => {
           >
             {fields.map((field, idx) => {
               return (
-                <InputField key={idx} field={field} onChange={handleInputChange}/>
+                <InputField key={idx} field={field} onChange={handleInputChange} disabled={isSubmitting}/>
               );
             })}
-            <Button text="Send Message" fullWidth />
+            <Button text={isSubmitting ? "Sending..." : "Send Message"} disabled={isSubmitting} fullWidth />
           </form>
 
           {showSuccess && (

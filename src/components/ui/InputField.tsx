@@ -7,9 +7,10 @@ interface FormInputFieldProps {
   field: InputField
   value?: string
   onChange?: (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void;
+  disabled?: boolean;
 }
 
-const FormInputField: React.FC<FormInputFieldProps> = ({ field, value, onChange }) => {
+const FormInputField: React.FC<FormInputFieldProps> = ({ field, value, onChange, disabled=false }) => {
   const { validation, styling } = field;
 
   // Prepare validation attributes for input/textarea elements
@@ -20,35 +21,39 @@ const FormInputField: React.FC<FormInputFieldProps> = ({ field, value, onChange 
     pattern: validation?.pattern?.toString()
   };
 
+  const commonProps = {
+    id: field?.name,
+    name: field?.name,
+    value,
+    onChange,
+    placeholder: styling?.placeholder,
+    disabled,
+    ...validationProps
+  };
+
+  const inputClassName = `w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 ${
+    disabled ? 'text-gray-400 select-none' : 'text-gray-700'
+  } ${styling?.className || ''}`;
+
   return (
     <div className="mb-6">
       <label
         htmlFor={field?.name}
         className="block text-gray-700 font-medium mb-2"
       >
-        { field.label }
+        {field.label}
       </label>
       {field.type === 'textarea' ? (
         <textarea
-          id={field?.name}
-          name={field?.name}
-          value={value}
-          onChange={onChange}
-          placeholder={styling?.placeholder}
+          {...commonProps}
           rows={4}
-          className={`w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 ${styling?.className}`}
-          {...validationProps}
-          />
+          className={inputClassName}
+        />
       ) : (
         <input
+          {...commonProps}
           type={field.type}
-          id={field?.name}
-          name={field?.name}
-          value={value}
-          onChange={onChange}
-          placeholder={styling?.placeholder}
-          className={`w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 ${styling?.className}`}
-          {...validationProps} 
+          className={inputClassName}
         />
       )}
       

@@ -27,3 +27,15 @@
 - 1.3 What a State - state management
     - Use Redux for state management
     - OR useContext - shares data between components - no external library required
+
+- 2.1 Fun with Forms - Contact Quest
+    - use hook - submitForm.hook.ts 
+    - Will require some local state management to display error/success message
+- 2.2 Error Wrangler
+    - use a schema library to provide better error messaging - Zod, Yup
+    - remove default browser validation to allow library to validate onsubmit
+- 2.3 Sole Submitter
+    - Requires state management to control reactivity of when customer clicks submit
+        - Prevent double clicking
+        - Show loading states on button (disable)
+        - Clear form fields on success - form.reset()

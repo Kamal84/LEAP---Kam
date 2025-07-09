@@ -2,6 +2,7 @@
 import React, { useContext, useState } from 'react';
 // Validation
 import { contactSchema } from '@/schemas/contact';
+import { ValidationError } from 'yup';
 // Hooks
 import { useSubmitForm } from "@/hooks/submitForm.hook";
 // Components
@@ -20,9 +21,10 @@ const ContactForm: React.FC = () => {
   
   // State to manage form data and submission status
   const [formData, setFormData] = useState<Record<string, string>>({});
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [showSuccess, setShowSuccess] = useState(false);
-  const [showError, setShowError] = useState(false);
+  const [errors, setErrors] = useState<Record<string, string>>({});
+  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+  const [showSuccess, setShowSuccess] = useState<boolean>(false);
+  const [showError, setShowError] = useState<boolean>(false);
   const { submitForm } = useSubmitForm();
   
   // Return null if contact form section not found
@@ -38,6 +40,14 @@ const ContactForm: React.FC = () => {
       ...prev,
       [name]: value
     }));
+    
+    // Clear error for this field when user starts typing
+    if (errors[name]) {
+      setErrors(prev => ({
+        ...prev,
+        [name]: ''
+      }));
+    }
   };
 
   // Handle form submission
@@ -45,9 +55,14 @@ const ContactForm: React.FC = () => {
     e.preventDefault();
     setShowSuccess(false);
     setShowError(false);
-    setIsSubmitting(true);
+    setErrors({});
     
     try {
+      // Validate form data with Yup
+      await contactSchema.validate(formData, { abortEarly: false });
+      
+      setIsSubmitting(true);
+      
       // Added 2 second delay to simulate server processing time
       await new Promise(resolve => setTimeout(resolve, 2000));
 
@@ -55,14 +70,25 @@ const ContactForm: React.FC = () => {
       
       if (result.success) {
         setShowSuccess(true);
-        const form = e.target as HTMLFormElement;
-        form.reset();
+        setFormData({});
+        setErrors({});
       } else {
         setShowError(true);
       }
     } catch (error) {
-      console.error('Form submission error:', error);
-      setShowError(true);
+      // Handle Yup validation errors
+      if (error instanceof ValidationError && error.inner) {
+        const fieldErrors: Record<string, string> = {};
+        error.inner.forEach((error: ValidationError) => {
+          if (error.path) {
+            fieldErrors[error.path] = error.message;
+          }
+        });
+        setErrors(fieldErrors);
+      } else {
+        console.error('Form submission error:', error);
+        setShowError(true);
+      }
     } finally {
       setIsSubmitting(false);
     }

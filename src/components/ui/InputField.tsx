@@ -8,18 +8,19 @@ interface FormInputFieldProps {
   value?: string
   onChange?: (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void;
   disabled?: boolean;
+  error?: string;
 }
 
-const FormInputField: React.FC<FormInputFieldProps> = ({ field, value, onChange, disabled=false }) => {
-  const { validation, styling } = field;
+const FormInputField: React.FC<FormInputFieldProps> = ({ field, value, onChange, disabled=false, error }) => {
+  const { styling } = field;
 
-  // Prepare validation attributes for input/textarea elements
-  const validationProps: React.InputHTMLAttributes<HTMLInputElement | HTMLTextAreaElement> = {
+  /* cms.data Validation rules commented out, not required when using Yup validation
+   const validationProps: React.InputHTMLAttributes<HTMLInputElement | HTMLTextAreaElement> = {
     required: validation?.required,
     minLength: validation?.minLength,
     maxLength: validation?.maxLength,
     pattern: validation?.pattern?.toString()
-  };
+  }; */
 
   const commonProps = {
     id: field?.name,
@@ -28,10 +29,12 @@ const FormInputField: React.FC<FormInputFieldProps> = ({ field, value, onChange,
     onChange,
     placeholder: styling?.placeholder,
     disabled,
-    ...validationProps
+    // ...validationProps
   };
 
-  const inputClassName = `w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 ${
+  const inputClassName = `w-full px-4 py-2 border ${
+    error ? 'border-red-500 focus:ring-red-500' : 'border-gray-300 focus:ring-blue-500'
+  } rounded-lg focus:outline-none focus:ring-2 ${
     disabled ? 'text-gray-400 select-none' : 'text-gray-700'
   } ${styling?.className || ''}`;
 
@@ -56,7 +59,11 @@ const FormInputField: React.FC<FormInputFieldProps> = ({ field, value, onChange,
           className={inputClassName}
         />
       )}
-      
+      {error && (
+        <p className="mt-1 text-sm text-red-600">
+          {error}
+        </p>
+      )}
     </div>
   );
 };

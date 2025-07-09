@@ -1,5 +1,7 @@
 // Standard libraries
 import React, { useContext, useState } from 'react';
+// Validation
+import { contactSchema } from '@/schemas/contact';
 // Hooks
 import { useSubmitForm } from "@/hooks/submitForm.hook";
 // Components
@@ -74,10 +76,18 @@ const ContactForm: React.FC = () => {
             onSubmit={handleFormSubmit}
             method={submission?.method}
             className="bg-gray-50 p-8 rounded-lg shadow-md"
+            noValidate
           >
             {fields.map((field, idx) => {
               return (
-                <InputField key={idx} field={field} onChange={handleInputChange} disabled={isSubmitting}/>
+                <InputField 
+                  key={idx} 
+                  field={field} 
+                  value={formData[field.name] || ''}
+                  onChange={handleInputChange} 
+                  disabled={isSubmitting}
+                  error={errors[field.name]}
+                />
               );
             })}
             <Button text={isSubmitting ? "Sending..." : "Send Message"} disabled={isSubmitting} fullWidth />
